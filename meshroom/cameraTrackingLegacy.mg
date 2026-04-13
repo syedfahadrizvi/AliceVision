@@ -4,21 +4,21 @@
         "fileVersion": "2.0",
         "nodesVersions": {
             "ApplyCalibration": "1.0",
-            "CameraInit": "12.0",
+            "CameraInit": "12.1",
             "CheckerboardDetection": "2.0",
             "ConvertSfMFormat": "2.0",
             "CopyFiles": "1.3",
-            "DepthMap": "5.0",
+            "Depthmap": "5.1",
             "DepthMapFilter": "4.0",
-            "DistortionCalibration": "6.0",
+            "DistortionCalibration": "6.1",
             "ExportAnimatedCamera": "2.0",
             "ExportDistortion": "2.0",
             "FeatureExtraction": "1.3",
             "FeatureMatching": "2.0",
-            "ImageDetectionPrompt": "0.2",
+            "ImageDetectionPrompt": "1.0",
             "ImageMatching": "2.0",
             "ImageMatchingMultiSfM": "1.0",
-            "ImageSegmentationBox": "0.3",
+            "ImageSegmentationBox": "1.0",
             "KeyframeSelection": "5.0",
             "MeshDecimate": "1.0",
             "MeshFiltering": "3.0",
@@ -53,7 +53,9 @@
                 -200,
                 0
             ],
-            "inputs": {},
+            "inputs": {
+                "isSequence": true
+            },
             "internalInputs": {
                 "color": "#575963"
             }
@@ -257,7 +259,7 @@
                 200
             ],
             "inputs": {
-                "input": "{KeyframeSelection_1.outputSfMDataFrames}",
+                "input": "{ApplyCalibration_1.output}",
                 "inputB": "{StructureFromMotion_2.output}",
                 "featuresFolders": [
                     "{FeatureExtraction_1.output}"

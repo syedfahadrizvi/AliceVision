@@ -12,7 +12,7 @@ class MaskProcessingNodeSize(desc.DynamicNodeSize):
     def __init__(self, param):
         self._params = param
 
-    def computeSize(self, node):
+    def __call__(self, node):
 
         size = 0
 
@@ -78,6 +78,6 @@ class MaskProcessing(desc.AVCommandLineNode):
             description="Processed segmentation masks.",
             semantic="imageList",
             value= "{nodeCacheFolder}/*.exr",
-            group="",
+            commandLineGroup="",
         ),
     ]

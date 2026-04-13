@@ -5,6 +5,7 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <aliceVision/types.hpp>
+#include <aliceVision/alicevision_omp.hpp>
 #include <aliceVision/config.hpp>
 
 #include <aliceVision/system/Timer.hpp>
@@ -576,6 +577,17 @@ int aliceVision_main(int argc, char** argv)
     if (!ret)
     {
         return EXIT_FAILURE;
+    }
+
+    // Set resection ID to 0 for all reconstructed views
+    for (auto & [viewId, view] : sfmData.getViews().valueRange())
+    {
+        if (!sfmData.isPoseAndIntrinsicDefined(view))
+        {
+            continue;
+        }
+
+        view.setResectionId(0);
     }
     
     showStatsAngles(sfmData);

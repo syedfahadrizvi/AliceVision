@@ -5,6 +5,7 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <aliceVision/sfmData/SfMData.hpp>
+#include <aliceVision/alicevision_omp.hpp>
 #include <aliceVision/sfmDataIO/sfmDataIO.hpp>
 #include <aliceVision/cmdline/cmdline.hpp>
 #include <aliceVision/system/main.hpp>
@@ -485,8 +486,11 @@ int aliceVision_main(int argc, char* argv[])
                 sfmDataIO::ESfMData::INTRINSICS | 
                 sfmDataIO::ESfMData::EXTRINSICS
     );
-    if (rangeStart == 0)
+
+    if (rangeStart <= 0)
+    {
         flagsPart = sfmDataIO::ESfMData::ALL;
+    }
 
     // Read the input SfM scene
     sfmData::SfMData inputSfmData;

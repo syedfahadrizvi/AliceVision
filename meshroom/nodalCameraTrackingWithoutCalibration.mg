@@ -3,7 +3,7 @@
         "releaseVersion": "2026.1.0+develop",
         "fileVersion": "2.0",
         "nodesVersions": {
-            "CameraInit": "12.0",
+            "CameraInit": "12.1",
             "ConvertDistortion": "1.0",
             "ConvertSfMFormat": "2.0",
             "CopyFiles": "1.3",
@@ -13,7 +13,7 @@
             "FeatureExtraction": "1.3",
             "FeatureMatching": "2.0",
             "ImageMatching": "2.0",
-            "ImageSegmentationSam3": "0.1",
+            "ImageSegmentationSam3": "1.0",
             "IntrinsicsTransforming": "1.1",
             "NodalSfM": "2.0",
             "RelativePoseEstimating": "3.1",
@@ -29,7 +29,9 @@
                 -220,
                 2
             ],
-            "inputs": {},
+            "inputs": {
+                "isSequence": true
+            },
             "internalInputs": {
                 "color": "#80766f"
             }

@@ -4,13 +4,13 @@
         "fileVersion": "2.0",
         "nodesVersions": {
             "ApplyCalibration": "1.0",
-            "CameraInit": "12.0",
+            "CameraInit": "12.1",
             "CheckerboardDetection": "2.0",
             "ConvertSfMFormat": "2.0",
             "CopyFiles": "1.3",
-            "DepthMap": "5.0",
+            "Depthmap": "5.1",
             "DepthMapFilter": "4.0",
-            "DistortionCalibration": "6.0",
+            "DistortionCalibration": "6.1",
             "ExportAlembic": "1.0",
             "ExportDistortion": "2.0",
             "ExportImages": "1.1",
@@ -18,7 +18,7 @@
             "FeatureMatching": "2.0",
             "ImageMatching": "2.0",
             "ImageMatchingMultiSfM": "1.0",
-            "ImageSegmentationSam3": "0.1",
+            "ImageSegmentationSam3": "1.0",
             "IntrinsicsTransforming": "1.1",
             "KeyframeSelection": "5.0",
             "MeshDecimate": "1.0",
@@ -58,7 +58,9 @@
                 -200,
                 0
             ],
-            "inputs": {},
+            "inputs": {
+                "isSequence": true
+            },
             "internalInputs": {
                 "label": "InitShot",
                 "color": "#575963"
@@ -351,7 +353,7 @@
                 139
             ],
             "inputs": {
-                "input": "{KeyframeSelection_1.outputSfMDataFrames}",
+                "input": "{ApplyCalibration_1.output}",
                 "inputB": "{SfMExpanding_2.output}",
                 "featuresFolders": "{TracksBuilding_2.featuresFolders}",
                 "method": "VocabularyTree",

@@ -5,11 +5,14 @@
 // You can obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <aliceVision/cmdline/cmdline.hpp>
+#include <aliceVision/alicevision_omp.hpp>
 #include <aliceVision/system/main.hpp>
 #include <aliceVision/image/io.hpp>
 #include <aliceVision/system/Parallelization.hpp>
 #include <aliceVision/sfmDataIO/viewIO.hpp>
 #include <aliceVision/sfmDataIO/sfmDataIO.hpp>
+#include <aliceVision/sfmData/uid.hpp>
+#include <aliceVision/sfmData/ImageGroup.hpp>
 #include <boost/program_options.hpp>
 
 #include <filesystem>
@@ -18,7 +21,7 @@
 // These constants define the current software version.
 // They must be updated when the command line is changed.
 #define ALICEVISION_SOFTWARE_VERSION_MAJOR 1
-#define ALICEVISION_SOFTWARE_VERSION_MINOR 0
+#define ALICEVISION_SOFTWARE_VERSION_MINOR 1
 
 using namespace aliceVision;
 
@@ -29,6 +32,7 @@ int aliceVision_main(int argc, char** argv)
     // command-line parameters
     std::vector<std::string> inputPaths;
     std::string outSfMDataFilepath;
+    bool isSequence = false;
     
     // clang-format off
     po::options_description requiredParams("Required parameters");
@@ -37,7 +41,8 @@ int aliceVision_main(int argc, char** argv)
     ("output,o", po::value<std::string>(&outSfMDataFilepath)->required(), "Path to the output SfMData file.");
         
     po::options_description optionalParams("Optional parameters");
-    optionalParams.add_options();
+    optionalParams.add_options()
+    ("isSequence", po::value<bool>(&isSequence)->default_value(isSequence), "The images provided as input are part of a sequence with temporal coherency.");
     // clang-format on
 
     CmdLine cmdline("AliceVision listImages");
@@ -98,6 +103,20 @@ int aliceVision_main(int argc, char** argv)
         {
             views.emplace(view->getViewId(), view);
         }
+    }
+
+    // Set the unique image group id for all the views of the sfmData
+    IndexT imageGroupId = computeGlobalId(sfmData.getViews());
+    for (auto & [_, view]: sfmData.getViews().valueRange())
+    {
+        view.setImageGroupId(imageGroupId);
+    }
+
+    if (sfmData.getViews().size() > 0)
+    {
+        // Create the image group
+        auto ptrImageGroup = sfmData::ImageGroup::create(isSequence ? sfmData::ImageGroup::Type::ImageSequence : sfmData::ImageGroup::Type::ImageSet);
+        sfmData.getImageGroups().emplace(imageGroupId, ptrImageGroup);
     }
 
     // store SfMData views & intrinsic data

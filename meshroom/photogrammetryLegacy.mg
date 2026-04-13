@@ -3,9 +3,9 @@
         "releaseVersion": "2025.1.0",
         "fileVersion": "2.0",
         "nodesVersions": {
-            "CameraInit": "12.0",
+            "CameraInit": "12.1",
             "CopyFiles": "1.3",
-            "DepthMap": "5.0",
+            "Depthmap": "5.1",
             "DepthMapFilter": "4.0",
             "FeatureExtraction": "1.3",
             "FeatureMatching": "2.0",

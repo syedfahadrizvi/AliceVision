@@ -8,7 +8,7 @@ from pyalicevision import parallelization as avpar
 class MaskEroding(desc.AVCommandLineNode):
     commandLine = "aliceVision_maskEroding {allParams}"
 
-    size = avpar.DynamicViewsSize("input")
+    size = avpar.DynamicDirectorySize("input")
     parallelization = desc.Parallelization(blockSize=50)
     commandLineRange = "--rangeIteration {rangeIteration} --rangeBlocksCount {rangeBlocksCount}"
 
@@ -52,6 +52,6 @@ class MaskEroding(desc.AVCommandLineNode):
             description="Processed masks.",
             semantic="imageList",
             value= "{nodeCacheFolder}/*.exr",
-            group="",
+            commandLineGroup="",
         ),
     ]

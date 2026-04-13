@@ -14,6 +14,7 @@
 #include <aliceVision/matchingImageCollection/GeometricFilterMatrix.hpp>
 #include <aliceVision/system/ProgressDisplay.hpp>
 #include <aliceVision/matchingImageCollection/GeometricInfo.hpp>
+#include <aliceVision/system/Logger.hpp>
 
 #include <map>
 #include <random>
@@ -50,7 +51,7 @@ void robustModelEstimation(PairwiseMatches& out_geometricMatches,
 {
     out_geometricMatches.clear();
 
-    auto progressDisplay = system::createConsoleProgressDisplay(putativeMatches.size(), std::cout, "Robust Model Estimation\n");
+    auto progressDisplay = system::createConsoleProgressDisplay(putativeMatches.size(), "Robust Model Estimation\n");
 
 #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < (int)putativeMatches.size(); ++i)
@@ -98,6 +99,7 @@ void robustModelEstimation(PairwiseMatches& out_geometricMatches,
  * @param[in] functor
  * @param[in] putativeMatches
  * @param[in] randomNumberGenerator
+ * @param minMatches Minimum number of matches to accept a pair of images (or 0 to disable limit).
  */
 template<typename GeometryFunctor>
 void robustModelEstimation(PairwiseGeometricInfo& out_geometricInfos,
@@ -105,11 +107,12 @@ void robustModelEstimation(PairwiseGeometricInfo& out_geometricInfos,
                            const feature::RegionsPerView& regionsPerView,
                            const GeometryFunctor& functor,
                            const PairwiseMatches& putativeMatches,
-                           std::mt19937& randomNumberGenerator)
+                           std::mt19937& randomNumberGenerator,
+                           size_t minMatches = 0)
 {
     out_geometricInfos.clear();
 
-    auto progressDisplay = system::createConsoleProgressDisplay(putativeMatches.size(), std::cout, "Robust Model Estimation\n");
+    auto progressDisplay = system::createConsoleProgressDisplay(putativeMatches.size(), "Robust Model Estimation\n");
 
 #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < (int)putativeMatches.size(); ++i)
@@ -125,8 +128,16 @@ void robustModelEstimation(PairwiseGeometricInfo& out_geometricInfos,
         {
             MatchesPerDescType inliers;
             GeometryFunctor geometricFilter = functor;  // use a copy since we are in a multi-thread context
-            const EstimationStatus state =
-              geometricFilter.geometricEstimation(sfmData, regionsPerView, imagePair, putativeMatchesPerType, randomNumberGenerator, inliers);
+            const EstimationStatus state = geometricFilter.geometricEstimation(sfmData, regionsPerView, imagePair, putativeMatchesPerType, randomNumberGenerator, inliers);
+            
+            ALICEVISION_LOG_DEBUG("Pair " << imagePair.first << ", " << imagePair.second << " : " << inliers.getNbAllMatches() << " inliers");
+
+            //Filter out pairs that do not have enough inliers
+            if (minMatches > 0 && inliers.getNbAllMatches() < minMatches)
+            {
+                ALICEVISION_LOG_DEBUG("Filtered by minMatches threshold");
+                continue;
+            }
 
             if (state.hasStrongSupport)
             {

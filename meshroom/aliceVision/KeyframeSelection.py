@@ -7,8 +7,8 @@ from meshroom.core.utils import EXR_STORAGE_DATA_TYPE, VERBOSE_LEVEL
 videoExts = [".avi", ".mov", ".mp4", ".m4a", ".m4v", ".3gp", ".3g2", ".mj2", ".m4v", ".mpg"]
 
 class KeyframeSelectionNodeSize(desc.DynamicNodeSize):
-    def computeSize(self, node):
-        inputPathsSize = super(KeyframeSelectionNodeSize, self).computeSize(node)
+    def __call__(self, node):
+        inputPathsSize = super(KeyframeSelectionNodeSize, self).__call__(node)
         s = 0
         finalSize = 0
         defaultParam = self._param
@@ -16,7 +16,7 @@ class KeyframeSelectionNodeSize(desc.DynamicNodeSize):
         # Compute the size for each entry in the list of input paths
         for input in node.attribute("inputPaths").value:
             self._param = input.fullName
-            s = s + super(KeyframeSelectionNodeSize, self).computeSize(node)
+            s = s + super(KeyframeSelectionNodeSize, self).__call__(node)
 
         # Retrieve the maximum number of keyframes for the smart selection
         # (which is high by default)
@@ -141,7 +141,7 @@ You can extract frames at regular interval by configuring only the min/maxFrameS
                         "sequence with respect to the set parameters.\n"
                         "- With the smart method, keyframes are selected based on their sharpness "
                         "and optical flow scores.",
-            group=None,  # skip group from command line
+            commandLineGroup=None,  # skip group from command line
             items=[
                 desc.BoolParam(
                     name="useSmartSelection",
@@ -155,7 +155,7 @@ You can extract frames at regular interval by configuring only the min/maxFrameS
                     description="Parameters for the regular keyframe selection.\n"
                                 "Keyframes are selected regularly over the sequence with respect "
                                 "to the set parameters.",
-                    group=None,  # skip group from command line
+                    commandLineGroup=None,  # skip group from command line
                     enabled=lambda node: node.selectionMethod.useSmartSelection.value is False,
                     items=[
                         desc.IntParam(
@@ -195,7 +195,7 @@ You can extract frames at regular interval by configuring only the min/maxFrameS
                     description="Parameters for the smart keyframe selection.\n"
                                 "Keyframes are selected based on their sharpness and optical "
                                 "flow scores.",
-                    group=None,  # skip group from command line
+                    commandLineGroup=None,  # skip group from command line
                     enabled=lambda node: node.selectionMethod.useSmartSelection.value,
                     items=[
                         desc.FloatParam(
@@ -334,7 +334,7 @@ You can extract frames at regular interval by configuring only the min/maxFrameS
             name="debugOptions",
             label="Debug Options",
             description="Debug options for the Smart keyframe selection method.",
-            group=None,  # skip group from command line
+            commandLineGroup=None,  # skip group from command line
             enabled=lambda node: node.selectionMethod.useSmartSelection.value,
             advanced=True,
             items=[
@@ -342,7 +342,7 @@ You can extract frames at regular interval by configuring only the min/maxFrameS
                     name="debugScores",
                     label="Export Scores",
                     description="Export the computed sharpness and optical flow scores to a file.",
-                    group=None,  # skip group from command line
+                    commandLineGroup=None,  # skip group from command line
                     enabled=lambda node: node.debugOptions.enabled,
                     items=[
                         desc.BoolParam(
@@ -374,7 +374,7 @@ You can extract frames at regular interval by configuring only the min/maxFrameS
                     name="opticalFlowVisualisation",
                     label="Optical Flow Visualisation",
                     description="Visualise the motion vectors for each input frame in HSV.",
-                    group=None,  # skip group from command line
+                    commandLineGroup=None,  # skip group from command line
                     enabled=lambda node: node.debugOptions.enabled,
                     items=[
                         desc.BoolParam(

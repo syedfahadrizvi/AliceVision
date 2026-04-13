@@ -37,6 +37,7 @@ SfMData::SfMData(const SfMData & other, bool unused)
     _landmarksUncertainty = other._landmarksUncertainty;
     _views = other._views;
     _intrinsics = other._intrinsics;
+    _imageGroups = other._imageGroups;
 }
 
 SfMData::SfMData(const SfMData & other, const Eigen::Vector3d & bbMin, const Eigen::Vector3d & bbMax)
@@ -54,6 +55,7 @@ SfMData::SfMData(const SfMData & other, const Eigen::Vector3d & bbMin, const Eig
     _landmarksUncertainty = other._landmarksUncertainty;
     _views = other._views;
     _intrinsics = other._intrinsics;
+    _imageGroups = other._imageGroups;
 
     for (const auto & pl : other._landmarks)
     {
@@ -74,6 +76,12 @@ bool SfMData::operator==(const SfMData& other) const
 {
     // Views
     if (_views != other._views)
+    {
+        return false;
+    }
+
+    // ImageGroups
+    if (_imageGroups != other._imageGroups)
     {
         return false;
     }
@@ -329,6 +337,17 @@ void SfMData::combine(const SfMData& sfmData)
 
     // constraints
     _constraintsPoint.insert(sfmData._constraintsPoint.begin(), sfmData._constraintsPoint.end());
+
+    // image groups
+    for (const auto & [imageGroupID, imageGroupPtr] : sfmData._imageGroups)
+    {
+        auto imageGroup = _imageGroups.find(imageGroupID);
+        // Priority is given to ImageSequence over ImageSet
+        if (imageGroup == _imageGroups.end() || imageGroupPtr.get()->getType() == sfmData::ImageGroup::Type::ImageSequence)
+        {
+            _imageGroups.insert_or_assign(imageGroupID, imageGroupPtr);
+        }
+    }
 }
 
 void SfMData::clear()
@@ -346,6 +365,7 @@ void SfMData::clear()
     _matchesFolders.clear();
     _poses.clear();
     _rigs.clear();
+    _imageGroups.clear();
 }
 
 void SfMData::resetParameterStates()
@@ -394,7 +414,7 @@ IndexT SfMData::findView(const std::string & imageName) const
     {
         const auto & v = viewPair.second;
 
-        if (imageName == std::to_string(v->getViewId()) || 
+        if (imageName == std::to_string(v->getViewId()) ||
             imageName == fs::path(v->getImage().getImagePath()).filename().string() ||
             imageName == v->getImage().getImagePath())
         {
@@ -469,12 +489,45 @@ void SfMData::removeUnusedLandmarks()
     });
 }
 
+void SfMData::removeUnusedImageGroups()
+{
+    std::set<IndexT> usedIds;
+
+    for (const auto & [_, view]: getViews().valueRange())
+    {
+        IndexT ig = view.getImageGroupId();
+        if (ig != UndefinedIndexT)
+        {
+            usedIds.insert(ig);
+        }
+    }
+
+    // Erase all image groups that are not used by any view
+    std::erase_if(getImageGroups(), [usedIds](const auto & pair) {
+        return (usedIds.find(pair.first) == usedIds.end());
+    });
+}
+
 void SfMData::repair()
 {
     removeUnusedIntrinsics();
     removeUnusedCameraPoses();
     removeInvalidObservations();
     removeUnusedLandmarks();
+    removeUnusedImageGroups();
+}
+
+bool SfMData::isFullyReconstructed() const
+{
+    for (const auto & [_, view] : getViews().valueRange())
+    {
+        if (!isPoseAndIntrinsicDefined(view))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 LandmarksPerView getLandmarksPerViews(const SfMData& sfmData)

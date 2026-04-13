@@ -13,7 +13,7 @@ class MergeNodeSize(desc.DynamicNodeSize):
     def __init__(self, param):
         self._params = param
 
-    def computeSize(self, node):
+    def __call__(self, node):
 
         size = 0
 
@@ -54,6 +54,13 @@ class SfMMerge(desc.AVCommandLineNode):
             value="simple_copy",
             values=["simple_copy", 'from_landmarks'],
         ),
+        desc.BoolParam(
+            name="ignoreDuplicates",
+            label="Ignore duplicates",
+            description="If disabled, an error will be thrown if a duplicate view or intrinsic is found.",
+            enabled=lambda node: node.method.value == "simple_copy",
+            value=False,
+        ),
         desc.ListAttribute(
             elementDesc=desc.File(
                 name="matchesFolder",
@@ -80,7 +87,7 @@ class SfMMerge(desc.AVCommandLineNode):
             description="Output SfM file format.",
             value="abc",
             values=["abc", "sfm", "json"],
-            group="",  # exclude from command line
+            commandLineGroup="",  # exclude from command line
         ),
         desc.ChoiceParam(
             name="verboseLevel",

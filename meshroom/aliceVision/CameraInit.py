@@ -1,4 +1,4 @@
-__version__ = "12.0"
+__version__ = "12.1"
 
 import os
 import json
@@ -360,7 +360,7 @@ The needed metadata are:
             ),
             label="Viewpoints",
             description="Input viewpoints.",
-            group="",
+            commandLineGroup="",
         ),
         desc.ListAttribute(
             name="intrinsics",
@@ -372,7 +372,7 @@ The needed metadata are:
             ),
             label="Intrinsics",
             description="Camera intrinsics.",
-            group="",
+            commandLineGroup="",
         ),
         desc.File(
             name="sensorDatabase",
@@ -472,6 +472,12 @@ The needed metadata are:
             invalidate=False,
             advanced=True,
             enabled=lambda node: node.viewIdMethod.value == "filename",
+        ),
+        desc.BoolParam(
+            name="isSequence",
+            label="Images are a sequence",
+            description="The images provided as input are part of a sequence with temporal coherency.",
+            value=False,
         ),
         desc.ChoiceParam(
             name="verboseLevel",

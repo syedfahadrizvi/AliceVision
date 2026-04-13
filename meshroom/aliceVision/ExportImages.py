@@ -2,11 +2,12 @@ __version__ = "1.1"
 
 from meshroom.core import desc
 from meshroom.core.utils import COLORSPACES, EXR_STORAGE_DATA_TYPE, VERBOSE_LEVEL
-
+from pyalicevision import parallelization as avpar
 
 class ExportImages(desc.AVCommandLineNode):
     commandLine = "aliceVision_exportImages {allParams}"
-    size = desc.DynamicNodeSize("input")
+    size = avpar.DynamicViewsSize("input")
+    
     parallelization = desc.Parallelization(blockSize=40)
     commandLineRange = "--rangeStart {rangeStart} --rangeSize {rangeBlockSize}"
 
@@ -114,7 +115,7 @@ For example, the target intrinsics may be the same without the distortion.
             description="List of undistorted images.",
             semantic="image",
             value=lambda attr: getUndistortedPath(attr.node.namingMode.value),
-            group="",
+            commandLineGroup="",
             advanced=True,
         ),
          desc.File(

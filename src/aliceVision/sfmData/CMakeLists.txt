@@ -3,6 +3,9 @@ set(sfmData_files_headers
     SfMData.hpp
     CameraPose.hpp
     Landmark.hpp
+    ImageGroup.hpp
+    ImageSet.hpp
+    ImageSequence.hpp
     View.hpp
     Rig.hpp
     uid.hpp
@@ -25,6 +28,7 @@ set(sfmData_files_sources
     exif.cpp
     ImageInfo.cpp
     Landmark.cpp
+    ImageGroup.cpp
     Observation.cpp
 )
 
@@ -48,7 +52,8 @@ alicevision_add_library(aliceVision_sfmData
 alicevision_add_test(sfmData_test.cpp
     NAME "sfmData"
     LINKS aliceVision_sfmData
-          aliceVision_system
+        aliceVision_camera
+        aliceVision_system
 )
 alicevision_add_test(view_test.cpp
     NAME "view"

@@ -4,16 +4,16 @@
         "fileVersion": "2.0",
         "nodesVersions": {
             "ApplyCalibration": "1.0",
-            "CameraInit": "12.0",
+            "CameraInit": "12.1",
             "CheckerboardDetection": "2.0",
             "ConvertSfMFormat": "2.0",
             "CopyFiles": "1.3",
-            "DistortionCalibration": "6.0",
+            "DistortionCalibration": "6.1",
             "ExportAlembic": "1.0",
             "ExportDistortion": "2.0",
             "ExportImages": "1.1",
             "GeometricFilterEstimating": "1.0",
-            "ImageSegmentationSam3": "0.1",
+            "ImageSegmentationSam3": "1.0",
             "IntrinsicsTransforming": "1.1",
             "KeyframeSelection": "5.0",
             "MatchMasking": "1.0",
@@ -52,7 +52,9 @@
                 -216,
                 34
             ],
-            "inputs": {},
+            "inputs": {
+                "isSequence": true
+            },
             "internalInputs": {
                 "color": "#575963"
             }

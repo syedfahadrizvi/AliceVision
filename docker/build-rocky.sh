@@ -6,8 +6,8 @@ test -e docker/fetch.sh || {
 	exit 1
 }
 
-test -z "$AV_DEPS_VERSION" && AV_DEPS_VERSION=2025.09.12
-test -z "$AV_VERSION" && AV_VERSION="$(git rev-parse --abbrev-ref HEAD)-$(git rev-parse --short HEAD)"
+test -z "$AV_DEPS_VERSION" && AV_DEPS_VERSION=2026.03.30
+test -z "$AV_VERSION" && AV_VERSION="develop-$(git rev-parse --short HEAD)"
 test -z "$CUDA_VERSION" && CUDA_VERSION=12.1.1
 test -z "$ROCKY_VERSION" && ROCKY_VERSION=9
 test -z "$REPO_OWNER" && REPO_OWNER=alicevision
@@ -27,7 +27,7 @@ DEPS_DOCKER_TAG=${REPO_OWNER}/alicevision-deps:${AV_DEPS_VERSION}-rocky${ROCKY_V
 echo "--== BUILD DEPENDENCIES ==--"
 
 ## DEPENDENCIES
-docker build \
+DOCKER_BUILDKIT=1 docker build --no-cache \
 	--rm \
 	--progress=plain \
 	--build-arg CUDA_VERSION=${CUDA_VERSION} \
@@ -46,7 +46,7 @@ DOCKER_TAG=${REPO_OWNER}/alicevision:${AV_VERSION}-rocky${ROCKY_VERSION}-cuda${C
 echo "--== BUILD ALICEVISION ==--"
 
 ## ALICEVISION
-docker build \
+DOCKER_BUILDKIT=1 docker build \
 	--rm \
 	--progress=plain \
 	--build-arg CUDA_VERSION=${CUDA_VERSION} \

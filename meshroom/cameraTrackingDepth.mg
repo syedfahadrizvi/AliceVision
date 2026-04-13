@@ -4,14 +4,14 @@
         "fileVersion": "2.0",
         "nodesVersions": {
             "ApplyCalibration": "1.0",
-            "CameraInit": "12.0",
+            "CameraInit": "12.1",
             "CheckerboardDetection": "2.0",
             "ConvertSfMFormat": "2.0",
             "CopyFiles": "1.3",
-            "DepthMap": "5.0",
+            "Depthmap": "5.1",
             "DepthMapFilter": "4.0",
             "DepthMapTracksInjecting": "1.0",
-            "DistortionCalibration": "6.0",
+            "DistortionCalibration": "6.1",
             "ExportAlembic": "1.0",
             "ExportDistortion": "2.0",
             "ExportImages": "1.1",
@@ -19,13 +19,13 @@
             "FeatureMatching": "2.0",
             "ImageMatching": "2.0",
             "ImageMatchingMultiSfM": "1.0",
-            "ImageSegmentationSam3": "0.1",
+            "ImageSegmentationSam3": "1.0",
             "IntrinsicsTransforming": "1.1",
             "KeyframeSelection": "5.0",
             "MeshDecimate": "1.0",
             "MeshFiltering": "3.0",
             "Meshing": "7.0",
-            "MoGe": "1.0",
+            "MoGe": "2.0",
             "RelativePoseEstimating": "3.1",
             "ScenePreview": "2.0",
             "SfMBootStrapping": "4.2",
@@ -62,7 +62,9 @@
                 -200,
                 0
             ],
-            "inputs": {},
+            "inputs": {
+                "isSequence": true
+            },
             "internalInputs": {
                 "color": "#575963"
             }
@@ -331,7 +333,7 @@
                 215
             ],
             "inputs": {
-                "input": "{KeyframeSelection_1.outputSfMDataFrames}",
+                "input": "{ApplyCalibration_1.output}",
                 "inputB": "{SfMExpanding_1.output}",
                 "featuresFolders": [
                     "{FeatureExtraction_1.output}"
