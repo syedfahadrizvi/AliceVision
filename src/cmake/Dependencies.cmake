@@ -669,6 +669,12 @@ if(AV_BUILD_FFMPEG)
 
     set(FFMPEG_TARGET ffmpeg)
 
+    if(AV_BUILD_VPX)
+        set(FFMPEG_VPX_FLAG "--enable-libvpx")
+    else()
+        set(FFMPEG_VPX_FLAG "--disable-libvpx")
+    endif()
+
     ExternalProject_add(${FFMPEG_TARGET}
         URL http://ffmpeg.org/releases/ffmpeg-5.1.2.tar.bz2
         URL_HASH MD5=53ce2a391fe1db4b5ce5c43b9ea9a814
@@ -679,7 +685,7 @@ if(AV_BUILD_FFMPEG)
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/ffmpeg
         UPDATE_COMMAND ""
         INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-        CONFIGURE_COMMAND <SOURCE_DIR>/configure 
+        CONFIGURE_COMMAND <SOURCE_DIR>/configure
             --prefix=<INSTALL_DIR>
             --extra-cflags="-I<INSTALL_DIR>/include"
             --extra-ldflags="-L<INSTALL_DIR>/lib"
@@ -687,7 +693,7 @@ if(AV_BUILD_FFMPEG)
             --disable-static
             --disable-gpl
             --enable-nonfree
-            --enable-libvpx
+            ${FFMPEG_VPX_FLAG}
         BUILD_COMMAND $(MAKE) -j${AV_BUILD_DEPENDENCIES_PARALLEL}
         DEPENDS ${VPX_TARGET}
     )
