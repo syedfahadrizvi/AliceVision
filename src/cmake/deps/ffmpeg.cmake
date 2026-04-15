@@ -9,6 +9,12 @@
 if(AV_BUILD_FFMPEG)
     set(FFMPEG_TARGET ffmpeg)
 
+    if(AV_BUILD_VPX)
+        set(FFMPEG_VPX_FLAG "--enable-libvpx")
+    else()
+        set(FFMPEG_VPX_FLAG "--disable-libvpx")
+    endif()
+
     ExternalProject_Add(${FFMPEG_TARGET}
         URL              ${DEP_FFMPEG_URL}
         URL_HASH         ${DEP_FFMPEG_HASH}
@@ -29,7 +35,7 @@ if(AV_BUILD_FFMPEG)
                 --disable-static
                 --disable-gpl
                 --enable-nonfree
-                --enable-libvpx
+                ${FFMPEG_VPX_FLAG}
         BUILD_COMMAND make -j${AV_BUILD_DEPENDENCIES_PARALLEL}
         DEPENDS ${VPX_TARGET}
     )
