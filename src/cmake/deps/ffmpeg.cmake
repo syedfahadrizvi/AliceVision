@@ -35,6 +35,7 @@ if(AV_BUILD_FFMPEG)
                 --disable-static
                 --disable-gpl
                 --enable-nonfree
+                --disable-htmlpages
                 ${FFMPEG_VPX_FLAG}
         BUILD_COMMAND make -j${AV_BUILD_DEPENDENCIES_PARALLEL}
         DEPENDS ${VPX_TARGET}
